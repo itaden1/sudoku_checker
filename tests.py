@@ -24,7 +24,7 @@ class TestSudokuSolution(unittest.TestCase):
                               [2, 8, 7, 4, 1, 9, 6, 3, 5],
                               [3, 4, 5, 2, 8, 6, 1, 7, 9]]
 
-        self.unfinished_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2], 
+        self.unfinished_board = [[5, 3, 0, 6, 7, 8, 9, 1, 2], 
                                  [6, 7, 2, 1, 9, 0, 3, 4, 9],
                                  [1, 0, 0, 3, 4, 2, 5, 6, 0],
                                  [8, 5, 9, 7, 6, 1, 0, 2, 0],
@@ -39,6 +39,10 @@ class TestSudokuSolution(unittest.TestCase):
         matrix = s.get_segment(2,2)
         self.assertEqual(matrix, [[5,3,4],[6,7,2],[1,9,8]])
     
+    def test_check_array(self):
+        s = solver.Solver(self.valid_board)
+        self.assertTrue(s.check_array([8,4,5,6,2,3,1,7,9]))
+
     def test_diff_seg(self):
         s = solver.Solver(self.valid_board)
         self.assertTrue(s.check_segment(2,5))
@@ -52,6 +56,8 @@ class TestSudokuSolution(unittest.TestCase):
         self.assertEqual(solver.validSolution(self.unfinished_board), False)
 
     def test_invalid_solution(self):
+        s = solver.Solver(self.invalid_board)
+        print(s.board)
         self.assertEqual(solver.validSolution(self.invalid_board), False)
 
 

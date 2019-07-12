@@ -49,13 +49,17 @@ class Solver:
         status = True
         if any(0 in i for i in self.board):
             return False
-
+        print("seg", self.check_segment(0,0))
+        print("col", self.check_array(self.get_col(0)), self.get_col(0))
+        print("row", self.check_array(self.get_row(0)), self.get_row(0))
+        """
         while status:
-            for i in range(0,3,9):
+            for i in range(0,9):
                 status = self.check_segment(i,0)
                 status = self.check_array(self.get_col(i))
                 status = self.check_array(self.get_row(i))
             break
+        """
         return status
 
     def get_segment(self, x, y):
@@ -70,20 +74,21 @@ class Solver:
             matrix.append(line)
         return matrix
 
-    def get_col(self, i):
-        col = [c[i] for c in self.board]
+    def get_col(self, y):
+        col = [c[y] for c in self.board]
         return col
 
     def get_row(self, x):
         return self.board[x]
 
     def check_array(self, array):
-        return sorted(list(array)) == self.valid_array
+        return sorted(list(array)) == self.valid_array and len(set(list(array))) == 9
 
     def check_segment(self, x, y):
         """Check a segment to ensure it contains nine uniqe numbers"""
         flat_list = sum(self.get_segment(x,y), [])
-        return self.valid_array == sorted(flat_list[:]) and len(set(flat_list)) == 9
+        return self.check_array(flat_list)
+        #return self.valid_array == sorted(flat_list[:]) and len(set(flat_list)) == 9
 
 
 def validSolution(board):

@@ -39,58 +39,68 @@ validSolution([
 ]); // => false
 """
 
-class Solver:
-    def __init__(self, board):
-        self.board = board
-        self.valid_array = [i for i in range(1,10)]
-        self.checked = {}
+from abc import ABC, abstractmethod
 
-    def valid(self):
-        status = True
-        if any(0 in i for i in self.board):
-            return False
-        print("seg", self.check_segment(0,0))
-        print("col", self.check_array(self.get_col(0)), self.get_col(0))
-        print("row", self.check_array(self.get_row(0)), self.get_row(0))
-        """
-        while status:
-            for i in range(0,9):
-                status = self.check_segment(i,0)
-                status = self.check_array(self.get_col(i))
-                status = self.check_array(self.get_row(i))
-            break
-        """
-        return status
 
-    def get_segment(self, x, y):
-        """Find the nearest matrix of nine based on a coordinate"""
+class SudokuBoard(ABC):
+
+    @abstractmethod
+    def get_row(self, index):
+        pass
+
+    @abstractmethod
+    def get_col(self, index):
+        pass
+
+    @abstractmethod
+    def get_matrix_segment(self, x, y):
+        pass
+
+
+class StandardSudokuBoard(SudokuBoard):
+
+    def __init__(self, matrix):
+        self.matrix = matrix
+
+    def get_row(self, index):
+        return self.matrix[index]
+
+    def get_col(self, index):
+        return [r[index] for r in self.matrix]
+
+    def get_matrix_segment(self, x, y):
         nx = x - x % 3
         ny = y - y % 3
-        matrix = []
+        sub_matrix = []
         for i in range(nx,nx+3):
             line = []
             for j in range(ny,ny+3):
-                line.append(self.board[i][j])
-            matrix.append(line)
-        return matrix
+                line.append(self.matrix[i][j])
+            sub_matrix.append(line)
+        return sum(sub_matrix, [])
 
-    def get_col(self, y):
-        col = [c[y] for c in self.board]
-        return col
 
-    def get_row(self, x):
-        return self.board[x]
+class ValidArray(ABC):
+
+    @abstractmethod
+    def check_array(self, array):
+        pass
+
+
+class IntArrayChecker(ValidArray):
+    """Checks an array contains all required integers. Retuns a Boolean"""
+    def __init__(self, valid_array=[]):
+        self.valid_array = valid_array
 
     def check_array(self, array):
-        return sorted(list(array)) == self.valid_array and len(set(list(array))) == 9
-
-    def check_segment(self, x, y):
-        """Check a segment to ensure it contains nine uniqe numbers"""
-        flat_list = sum(self.get_segment(x,y), [])
-        return self.check_array(flat_list)
-        #return self.valid_array == sorted(flat_list[:]) and len(set(flat_list)) == 9
+        if not sorted(array[:]) == self.valid_array:
+            return False
+        return True
 
 
-def validSolution(board):
-    s = Solver(board)
-    return s.valid()
+def validate_board(matrix):
+    board = StandardSudokuBoard(matrix)
+    checker = IntArrayChecker([i for i in range(1,10)])
+    for i in range(len(matrix)):
+        print("row {}".format(i), checker.check_array(board.get_row(i)))
+        print("col {}".format(i), checker.check_array(board.get_col(i)))

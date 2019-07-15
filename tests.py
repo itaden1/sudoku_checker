@@ -83,11 +83,11 @@ class TestSudokuSolution(unittest.TestCase):
 
     def test_invalid_board(self):
         validate_board(self.invalid_board)
-        self.assertTrue(validate_board(self.invalid_board))
+        self.assertFalse(validate_board(self.invalid_board))
 
     def test_unfinished_board(self):
         validate_board(self.unfinished_board)
-        self.assertTrue(validate_board(self.unfinished_board))
+        self.assertFalse(validate_board(self.unfinished_board))
 
 
 if __name__ == "__main__":

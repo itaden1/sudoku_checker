@@ -102,5 +102,13 @@ def validate_board(matrix):
     board = StandardSudokuBoard(matrix)
     checker = IntArrayChecker([i for i in range(1,10)])
     for i in range(len(matrix)):
-        print("row {}".format(i), checker.check_array(board.get_row(i)))
-        print("col {}".format(i), checker.check_array(board.get_col(i)))
+        if not checker.check_array(board.get_row(i)):
+            return False
+        if not checker.check_array(board.get_col(i)):
+            return False
+
+    for x in range(0,len(matrix),3):
+        for y in range(0,len(matrix),3):
+            if not checker.check_array(board.get_matrix_segment(x,y)):
+                return False
+    return True
